@@ -15,16 +15,24 @@ app.use(cors());
 app.use(express.json());
 app.use(router);
 
-connectDB();
-
 //test Routes
 app.get("/", (req, res) => {
   return res.status(200).json({ success: "response from get api" });
 });
 
 // Server setup
-const server = http.createServer(app);
-const port = process.env.PORT || 5000;
-server.listen(port, () => {
-  console.log(`server run at ${port}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    const server = http.createServer(app);
+    const port = process.env.PORT || 5000;
+    server.listen(port, () => {
+      console.log(`server run at ${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
